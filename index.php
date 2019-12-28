@@ -2,8 +2,9 @@
 $config = [
     'date' => 'jan1',
     'food' => 'piz',
-    'game' => 'exit',
+    'game' => 'andor',
     'location' => 'neur',
+    'additional_participants' => ['Nina', 'Matthias'],
 ];
 
 class AbstractSelector {
@@ -13,7 +14,7 @@ class AbstractSelector {
     public function getOption(string $identifier): string
     {
         if (!isset($this->options[$identifier])) {
-            return '';
+            return $identifier;
         }
         return $this->options[$identifier];
     }
@@ -36,6 +37,7 @@ class GameSelector extends AbstractSelector {
         'domin' => 'Dominion',
         'crew' => 'Die Crew',
         'wing' => 'Flügelschlag',
+        'andor' => 'Die Legenden von Andor',
     ];
 }
 class DateSelector extends AbstractSelector {
@@ -56,6 +58,8 @@ class DateSelector extends AbstractSelector {
 class FoodSelector extends AbstractSelector {
     protected $options = [
         'piz' => 'Pizza',
+        'rac' => 'Raclette',
+        'bur' => 'Burger (mit Davids Original Reispaddies) und Pommes',
     ];
 }
 class LocationSelector extends AbstractSelector {
@@ -100,11 +104,15 @@ class Parents {
 }
 
 $gameSelector = new GameSelector();
-if (empty($config['game']) || !$gameOption = $gameSelector->getOption($config['game'])) {
+if (empty($config['game']) || !($gameOption = $gameSelector->getOption($config['game']))) {
     $gameOption = $gameSelector->getOption('exit');
 }
+
 $parents = new Parents(['Hedi', 'Andreas']);
 $participants = $parents->getChildren();
+if (!empty($config['additional_participants'])) {
+    $participants = array_merge($participants, $config['additional_participants']);
+}
 
 $dateSelector = new DateSelector();
 if (empty($config['date']) || !$dateOption = $dateSelector->getOption($config['date'])) {
