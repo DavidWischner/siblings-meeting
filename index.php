@@ -1,11 +1,15 @@
 <?php
-$config = [
-    'date' => 'jan1',
-    'food' => 'piz',
-    'game' => 'andor',
-    'location' => 'neur',
-    'additional_participants' => ['Nina', 'Matthias'],
+$configFiles = [
+    'config.global.php',
+    'config.local.php',
 ];
+$config = [];
+
+foreach ($configFiles as $configFile) {
+    if (file_exists($configFile)) {
+        $config = array_merge($config, include $configFile);
+    }
+}
 
 class AbstractSelector {
     /** @var string[] */
